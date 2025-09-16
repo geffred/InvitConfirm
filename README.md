@@ -32,7 +32,7 @@ Une application web moderne développée en **Spring Boot 3.x** avec **Thymeleaf
 - **Frontend**: Thymeleaf, Bootstrap 5.3, Font Awesome 6.4
 - **Base de données**: MySQL 8.0
 - **ORM**: Hibernate
-- **PDF**: iText 7
+- **PDF**: openpdf
 - **Build**: Maven
 
 ## 📋 Prérequis
