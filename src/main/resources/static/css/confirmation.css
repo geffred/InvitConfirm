@@ -1,0 +1,152 @@
+/* Variables de couleurs */
+:root {
+    --marron: #8B4513;
+    --marron-clair: #A0522D;
+    --marron-fonce: #654321;
+    --marron-tres-clair: #F5EBDC;
+    --noir: #333333;
+    --blanc: #FFFFFF;
+    --gris-clair: #F5F5F5;
+    --gris: #E0E0E0;
+    --success: #28a745;
+    --danger: #dc3545;
+    --warning: #ffc107;
+}
+
+/* Styles généraux */
+.confirmation-body {
+    background-color: var(--blanc);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--noir);
+    padding: 20px 0;
+}
+
+.confirmation-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.confirmation-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    background: var(--blanc);
+    overflow: hidden;
+}
+
+.confirmation-card-header {
+    background: var(--marron);
+    color: var(--blanc);
+    border-radius: 0;
+    padding: 30px;
+    text-align: center;
+    border: none;
+}
+
+.confirmation-icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    animation: confirmationBounce 2s infinite;
+}
+
+@keyframes confirmationBounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+}
+
+.confirmation-form-control {
+    border-radius: 6px;
+    border: 1px solid var(--gris);
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    background-color: var(--gris-clair);
+    color: var(--noir);
+    font-size: 1rem;
+}
+
+.confirmation-form-control:focus {
+    border-color: var(--marron);
+    box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.15);
+}
+
+.confirmation-btn {
+    background: var(--marron);
+    border-color: var(--marron);
+    border-radius: 6px;
+    padding: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    color: var(--blanc);
+    font-size: 1rem;
+}
+
+.confirmation-btn:hover {
+    background: var(--marron-fonce);
+    border-color: var(--marron-fonce);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.2);
+    color: var(--blanc);
+}
+
+.confirmation-info-box {
+    background-color: var(--marron-tres-clair);
+    color: var(--marron-fonce);
+    border-radius: 6px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    border-left: 4px solid var(--marron);
+}
+
+.confirmation-back-link {
+    color: var(--marron);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.confirmation-back-link:hover {
+    color: var(--marron-fonce);
+    text-decoration: underline;
+}
+
+.confirmation-animate-fade-in {
+    animation: confirmationFadeIn 0.8s ease-in;
+}
+
+@keyframes confirmationFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.confirmation-label {
+    font-weight: 500;
+    color: var(--noir);
+    margin-bottom: 8px;
+}
+
+.confirmation-required {
+    color: var(--danger);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .confirmation-container {
+        padding: 15px;
+    }
+    
+    .confirmation-card-header {
+        padding: 20px;
+    }
+    
+    .confirmation-icon {
+        font-size: 2.5rem;
+    }
+}

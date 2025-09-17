@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Gestion des Invités</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg admin-navbar">
+        <div class="container">
+            <a class="navbar-brand admin-navbar-brand fw-bold" href="/">
+                <i class="fas fa-calendar-check me-2"></i>
+                Gestion Invitations
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link admin-nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt me-1"></i>
+                    Déconnexion
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Messages flash -->
+        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${successMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <!-- En-tête d'administration -->
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-users-cog me-2"></i>
+                Administration des Invités
+            </h1>
+            <p class="text-muted">Gérez les confirmations de présence</p>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="row stats-row">
+            <div class="col-md-3 col-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-number" th:text="${stats.total}">0</div>
+                    <div>Total Invités</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stats-number" th:text="${stats.confirmes}">0</div>
+                    <div>Confirmés</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <div class="stats-number" th:text="${stats.nonConfirmes}">0</div>
+                    <div>En attente</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stats-number" th:text="${#numbers.formatDecimal(stats.pourcentageConfirmes, 1, 1)} + '%'">0%</div>
+                    <div>Taux de confirmation</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire d'ajout/modification -->
+        <div class="admin-card mb-4">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0">
+                    <i class="fas fa-plus me-2"></i>
+                    <span th:if="${editingInvite}">Modifier l'invité</span>
+                    <span th:unless="${editingInvite}">Ajouter un invité</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                <form th:action="${editingInvite} ? @{'/admin/invites/' + ${editingInvite.id}} : @{/admin/invites}" 
+                      method="post">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="nom" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="nom" name="nom" 
+                                   th:value="${editingInvite?.nom}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="prenom" class="form-label">Prénom</label>
+                            <input type="text" class="form-control" id="prenom" name="prenom" 
+                                   th:value="${editingInvite?.prenom}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="confirme" class="form-label">Statut</label>
+                            <select class="form-select" id="confirme" name="confirme">
+                                <option value="false" th:selected="${editingInvite?.confirme == false}">Non confirmé</option>
+                                <option value="true" th:selected="${editingInvite?.confirme == true}">Confirmé</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <a th:if="${editingInvite}" href="/admin/invites" class="btn btn-secondary me-2">Annuler</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            <span th:text="${editingInvite} ? 'Modifier' : 'Ajouter'"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Section de recherche -->
+        <div class="filter-section">
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-2">
+                    <form th:action="@{/admin/invites}" method="get" class="d-flex">
+                        <input type="text" 
+                               class="form-control me-2" 
+                               name="search" 
+                               placeholder="Rechercher un invité..."
+                               th:value="${searchQuery}">
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a th:if="${searchQuery}" href="/admin/invites" class="admin-btn btn-secondary me-2">
+                        <i class="fas fa-times me-2"></i>
+                        Effacer la recherche
+                    </a>
+                    <a href="/admin/invites" class="admin-btn btn-primary">
+                        <i class="fas fa-sync-alt me-2"></i>
+                        Actualiser
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table des invités -->
+        <div class="admin-card">
+            <div class="card-header bg-transparent border-bottom">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Liste des invités
+                    <span th:if="${searchQuery}" class="text-muted fs-6 ms-2">
+                        (Résultats pour: "<span th:text="${searchQuery}"></span>")
+                    </span>
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="admin-table" id="invitesTable">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Statut</th>
+                                <th>Date de confirmation</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="invite : ${invites}">
+                                <td>
+                                    <strong th:text="${invite.nom}"></strong>
+                                </td>
+                                <td th:text="${invite.prenom}"></td>
+                                <td>
+                                    <span th:if="${invite.confirme}" 
+                                          class="admin-badge badge-success">
+                                        <i class="fas fa-check me-1"></i>
+                                        Confirmé
+                                    </span>
+                                    <span th:unless="${invite.confirme}" 
+                                          class="admin-badge badge-warning">
+                                        <i class="fas fa-clock me-1"></i>
+                                        En attente
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${invite.dateConfirmation}" 
+                                          th:text="${#temporals.format(invite.dateConfirmation, 'dd/MM/yyyy HH:mm')}"></span>
+                                    <span th:unless="${invite.dateConfirmation}" 
+                                          class="text-muted">-</span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{'/admin/invites/edit/' + ${invite.id}}" 
+                                       class="admin-btn btn-outline-primary btn-sm me-1">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form th:action="@{'/admin/invites/delete/' + ${invite.id}}" 
+                                          method="post" 
+                                          class="d-inline"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet invité?');">
+                                        <button type="submit" class="admin-btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- Message si aucun invité -->
+                    <div th:if="${#lists.isEmpty(invites)}" class="text-center p-5">
+                        <i class="fas fa-users text-muted" style="font-size: 3rem;"></i>
+                        <h4 class="text-muted mt-3">Aucun invité trouvé</h4>
+                        <p class="text-muted" th:if="${searchQuery}">Aucun résultat pour votre recherche</p>
+                        <p class="text-muted" th:unless="${searchQuery}">Commencez par ajouter des invités à votre événement</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

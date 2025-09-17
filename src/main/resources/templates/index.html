@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'Gestion des Invitations'"></title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <link href="https://fonts.cdnfonts.com/css/satura-text-pro" rel="stylesheet">
+                
+</head>
+<body>
+    <div th:replace="fragments/header"></div>
+
+    <div class="hero-section">
+        <div class="container section-padding">
+            <div class="text-center text-white">
+                <h1 class="hero-title">
+                    <i class="fas fa-calendar-check me-3"></i>
+                    Gestion des Invitations
+                </h1>
+                <p class="hero-subtitle">
+                    Système moderne de confirmation de présence via QR Code 
+                </p>
+            </div>
+            
+            <!-- Cartes fonctionnalités -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card card-custom h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="fas fa-qrcode feature-icon"></i>
+                            <h5 class="card-title fw-bold mt-3">QR Code Unique</h5>
+                            <p class="card-text">
+                                Un seul QR code pour tous vos invités. 
+                                Scannez et confirmez votre présence en quelques secondes.
+                            </p>
+                            <a href="/invitation/valider" class="btn btn-marron mt-3">
+                                <i class="fas fa-mobile-alt me-2"></i>
+                                Valider mon  QR Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card card-custom h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="fas fa-shield-alt feature-icon"></i>
+                            <h5 class="card-title fw-bold mt-3">Administration Sécurisée</h5>
+                            <p class="card-text">
+                                Interface d'administration protégée pour gérer 
+                                tous vos invités et exporter les confirmations.
+                            </p>
+                            <a href="/login" class="btn btn-outline-marron mt-3">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Connexion Admin
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card card-custom h-100 p-4">
+                        <div class="card-body text-center">
+                            <i class="fas fa-file-pdf feature-icon"></i>
+                            <h5 class="card-title fw-bold mt-3">Export PDF</h5>
+                            <p class="card-text">
+                                Générez automatiquement des rapports PDF 
+                                avec la liste complète des invités et leur statut.
+                            </p>
+                            <button class="btn btn-outline-marron mt-3" disabled>
+                                <i class="fas fa-download me-2"></i>
+                                Export PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Processus "Comment ça marche" -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-lg-10">
+                    <div class="card card-custom p-4">
+                        <div class="card-body">
+                            <h5 class="text-center mb-4 fw-bold">
+                                <i class="fas fa-info-circle me-2" style="color: var(--marron);"></i>
+                                Comment ça marche ?
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 process-step">
+                                    <div class="step-icon">
+                                        <i class="fas fa-qrcode"></i>
+                                    </div>
+                                    <h6 class="step-title">1. Scanner</h6>
+                                    <p class="step-description">Scannez le QR Code avec votre smartphone</p>
+                                </div>
+                                <div class="col-md-4 process-step">
+                                    <div class="step-icon">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <h6 class="step-title">2. Saisir</h6>
+                                    <p class="step-description">Entrez votre nom et prénom</p>
+                                </div>
+                                <div class="col-md-4 process-step">
+                                    <div class="step-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <h6 class="step-title">3. Confirmer</h6>
+                                    <p class="step-description">Votre présence est confirmée !</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer"></div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Administration</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body class="login-body">
+    <div class="container">
+        <div class="login-container login-animate-fade-in">
+            <!-- Lien de retour -->
+            <div class="text-center mb-4">
+                <a href="/" class="login-back-link">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Retour à l'accueil
+                </a>
+            </div>
+            
+            <div class="login-card">
+                <div class="login-card-header">
+                    <i class="fas fa-shield-alt login-icon"></i>
+                    <h4 class="mb-0">Administration</h4>
+                    <p class="mb-0 opacity-75">Connexion sécurisée</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Message d'erreur -->
+                    <div th:if="${error}" class="alert login-alert" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span th:text="${error}"></span>
+                    </div>
+                    
+                    <!-- Formulaire de connexion -->
+                    <form method="post" action="/login">
+                        <div class="mb-3">
+                            <label for="username" class="form-label login-label">
+                                <i class="fas fa-user me-2"></i>
+                                Nom d'utilisateur
+                            </label>
+                            <input type="text" 
+                                   class="form-control login-form-control" 
+                                   id="username" 
+                                   name="username" 
+                                   placeholder="Entrez votre nom d'utilisateur" 
+                                   required 
+                                   autofocus>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label login-label">
+                                <i class="fas fa-lock me-2"></i>
+                                Mot de passe
+                            </label>
+                            <input type="password" 
+                                   class="form-control login-form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   placeholder="Entrez votre mot de passe" 
+                                   required>
+                        </div>
+                        
+                        <button type="submit" class="btn login-btn">
+                            <i class="fas fa-sign-in-alt me-2"></i>
+                            Se connecter
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="login-card-footer py-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Identifiants par défaut : admin / admin123
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

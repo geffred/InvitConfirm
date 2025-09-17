@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmer ma présence</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="/css/confirmation.css">
+</head>
+<body class="confirmation-body">
+    <div class="container">
+        <div class="confirmation-container confirmation-animate-fade-in">
+            <!-- Lien de retour -->
+            <div class="text-center mb-4">
+                <a href="/" class="confirmation-back-link">
+                    <i class="fas fa-home me-2"></i>
+                    Retour à l'accueil
+                </a>
+            </div>
+            
+            <div class="confirmation-card">
+                <div class="confirmation-card-header">
+                    <i class="fas fa-calendar-check confirmation-icon"></i>
+                    <h3 class="mb-2">Confirmer ma présence</h3>
+                    <p class="mb-0 opacity-75">Veuillez saisir vos informations</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="post" action="/invitation/confirmer" id="confirmationForm">
+                        <div class="mb-4">
+                            <label for="nom" class="form-label confirmation-label">
+                                <i class="fas fa-user me-2"></i>
+                                Nom de famille <span class="confirmation-required">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control confirmation-form-control" 
+                                   id="nom" 
+                                   name="nom" 
+                                   placeholder="Entrez votre nom de famille" 
+                                   required 
+                                   autofocus
+                                   autocapitalize="words">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="prenom" class="form-label confirmation-label">
+                                <i class="fas fa-user me-2"></i>
+                                Prénom <span class="confirmation-required">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control confirmation-form-control" 
+                                   id="prenom" 
+                                   name="prenom" 
+                                   placeholder="Entrez votre prénom" 
+                                   required
+                                   autocapitalize="words">
+                        </div>
+                        
+                        <button type="submit" class="btn confirmation-btn" id="submitBtn">
+                            <i class="fas fa-check me-2"></i>
+                            Confirmer ma présence
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="confirmation-info-box">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Important :</strong> Veuillez saisir exactement le nom et prénom 
+                    figurant sur votre invitation pour que votre confirmation soit prise en compte.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Animation du bouton lors de la soumission
+        document.getElementById('confirmationForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Confirmation en cours...';
+            submitBtn.disabled = true;
+        });
+        
+        // Animation des champs lors du focus
+        document.querySelectorAll('.confirmation-form-control').forEach(function(input) {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+                this.parentElement.style.transition = 'transform 0.3s ease';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

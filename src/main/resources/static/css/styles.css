@@ -1,0 +1,262 @@
+/* Variables de couleurs */
+:root {
+    --marron: #8B4513;
+    --marron-clair: #A0522D;
+    --marron-fonce: #654321;
+    --marron-tres-clair: #F5EBDC;
+    --noir: #333333;
+    --blanc: #FFFFFF;
+    --gris-clair: #F5F5F5;
+    --gris: #E0E0E0;
+    --success: #28a745;
+    --danger: #dc3545;
+}
+
+/* Reset et styles de base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--gris-clair);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--noir);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation */
+.navbar-custom {
+    background-color: var(--marron-fonce) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 0.8rem 0;
+}
+
+.navbar-brand-custom {
+    color: var(--blanc) !important;
+    font-weight: 700;
+    font-size: 1.4rem;
+    font-family: 'Satura Text Pro', sans-serif;
+                                                
+}
+
+.nav-link-custom {
+    color: var(--blanc) !important;
+    transition: color 0.3s ease;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500;
+}
+
+.nav-link-custom:hover {
+    color: var(--marron-tres-clair) !important;
+}
+
+.navbar-toggler-custom {
+    border-color: var(--marron-tres-clair);
+}
+
+.navbar-toggler-icon-custom {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Boutons */
+.btn-marron {
+    background-color: var(--marron);
+    border-color: var(--marron);
+    color: var(--blanc);
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-marron:hover {
+    background-color: var(--marron-fonce);
+    border-color: var(--marron-fonce);
+    color: var(--marron);
+    background: white;
+
+}
+
+.btn-outline-marron {
+    border: 2px solid var(--marron);
+    color: var(--marron);
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.btn-outline-marron:hover {
+    background-color: var(--marron);
+    color: var(--blanc);
+}
+
+/* Cartes */
+.card-custom {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--blanc);
+    height: 100%;
+}
+
+.card-custom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.feature-icon {
+    color: var(--marron);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--marron-clair) 0%, var(--marron-fonce) 100%);
+    padding: 4rem 0;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--blanc);
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    color: var(--blanc);
+    margin-bottom: 2rem;
+}
+
+/* Process Steps */
+.process-step {
+    text-align: center;
+    padding: 1rem;
+}
+
+.step-icon {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(139, 69, 19, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.step-icon i {
+    font-size: 2rem;
+    color: var(--marron);
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--noir);
+}
+
+.step-description {
+    font-size: 0.9rem;
+    color: var(--noir);
+    opacity: 0.8;
+}
+
+/* Footer */
+.footer-custom {
+    background-color: var(--marron-fonce);
+    color: var(--blanc);
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.footer-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--blanc);
+}
+
+.footer-text {
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.footer-copyright {
+    opacity: 0.8;
+    margin-bottom: 0;
+}
+
+/* Utilitaires */
+.section-padding {
+    padding: 4rem 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+    }
+    
+    .btn-marron,
+    .btn-outline-marron {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .step-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .step-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .navbar-brand-custom {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .section-padding {
+        padding: 2rem 0;
+    }
+    
+    .process-step {
+        margin-bottom: 2rem;
+    }
+}
