@@ -29,17 +29,18 @@ public class AdminController {
 
     /**
      * Page principale d'administration - Liste des invités
+     * 
+     * @GetMapping("/invites")
+     * public String listInvites(Model model) {
+     * List<Invite> invites = inviteService.getAllInvites();
+     * InviteService.InviteStats stats = inviteService.getStats();
+     * 
+     * model.addAttribute("invites", invites);
+     * model.addAttribute("stats", stats);
+     * 
+     * return "admin/invites";
+     * }
      */
-    @GetMapping("/invites")
-    public String listInvites(Model model) {
-        List<Invite> invites = inviteService.getAllInvites();
-        InviteService.InviteStats stats = inviteService.getStats();
-
-        model.addAttribute("invites", invites);
-        model.addAttribute("stats", stats);
-
-        return "admin/invites";
-    }
 
     /**
      * Export PDF de la liste des invités
