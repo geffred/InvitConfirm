@@ -134,13 +134,23 @@ src/main/java/com/example/invitations/
 │   └── SecurityConfig.java         # Configuration sécurité
 └── InvitationManagerApplication.java
 
+src/static/css/
+├── admin.css
+├── confirmation.css
+├── confirmationResult.css
+├── login.css
+├── style.css
+
 src/main/resources/templates/
 ├── index.html                      # Page d'accueil
 ├── login.html                      # Page de connexion
 ├── confirmationForm.html           # Formulaire confirmation
 ├── confirmationResult.html         # Résultat confirmation
 └── admin/
-    └── invites.html                # Interface administration
+├    └── invites.html               # Interface administration
+└── fragments/
+    └── header.html 
+    └── footer.html                 # header && footer
 ```
 
 ## 🔧 Configuration personnalisée
