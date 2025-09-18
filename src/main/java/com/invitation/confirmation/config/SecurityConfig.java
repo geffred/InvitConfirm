@@ -20,12 +20,15 @@ public class SecurityConfig {
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
                                 .authorizeHttpRequests(authz -> authz
-                                                // Routes publiques
+                                                // Routes publiques - spécifiques d'abord
+                                                .requestMatchers("/", "/login", "/logout").permitAll()
                                                 .requestMatchers("/invitation/**").permitAll()
                                                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                                                .requestMatchers("/").permitAll()
+
                                                 // Routes protégées
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                                                // Toutes les autres requêtes
                                                 .anyRequest().authenticated())
                                 .formLogin(form -> form
                                                 .loginPage("/login")
@@ -38,7 +41,7 @@ public class SecurityConfig {
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID")
                                                 .permitAll())
-                                .csrf(csrf -> csrf.disable()) // Désactivé pour simplifier (à activer en production)
+                                .csrf(csrf -> csrf.disable()) // À réactiver en production
                                 .headers(headers -> headers.frameOptions().deny());
 
                 return http.build();

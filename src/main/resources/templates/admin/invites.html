@@ -15,21 +15,8 @@
 </head>
 <body class="admin-body">
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg admin-navbar">
-        <div class="container">
-            <a class="navbar-brand admin-navbar-brand fw-bold" href="/">
-                <i class="fas fa-calendar-check me-2"></i>
-                Gestion Invitations
-            </a>
-            
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link admin-nav-link" href="/logout">
-                    <i class="fas fa-sign-out-alt me-1"></i>
-                    Déconnexion
-                </a>
-            </div>
-        </div>
-    </nav>
+    
+     <div th:replace="fragments/header"></div>
 
     <div class="container mt-4">
         <!-- Messages flash -->
@@ -55,7 +42,7 @@
         <!-- Statistiques -->
         <div class="row stats-row">
             <div class="col-md-3 col-6 mb-3">
-                <div class="admin-card">
+                <div class="admin-card stats-card">
                     <div class="stats-icon">
                         <i class="fas fa-users"></i>
                     </div>
@@ -65,7 +52,7 @@
             </div>
             
             <div class="col-md-3 col-6 mb-3">
-                <div class="admin-card">
+                <div class="admin-card stats-card">
                     <div class="stats-icon">
                         <i class="fas fa-user-check"></i>
                     </div>
@@ -75,7 +62,7 @@
             </div>
             
             <div class="col-md-3 col-6 mb-3">
-                <div class="admin-card">
+                <div class="admin-card stats-card">
                     <div class="stats-icon">
                         <i class="fas fa-user-clock"></i>
                     </div>
@@ -85,7 +72,7 @@
             </div>
             
             <div class="col-md-3 col-6 mb-3">
-                <div class="admin-card">
+                <div class="admin-card stats-card">
                     <div class="stats-icon">
                         <i class="fas fa-percentage"></i>
                     </div>
@@ -143,7 +130,7 @@
                 <div class="col-md-6 mb-2">
                     <form th:action="@{/admin/invites}" method="get" class="d-flex">
                         <input type="text" 
-                               class="form-control me-2" 
+                               class="form-control me-2 search-input" 
                                name="search" 
                                placeholder="Rechercher un invité..."
                                th:value="${searchQuery}">
@@ -231,7 +218,7 @@
                     </table>
                     
                     <!-- Message si aucun invité -->
-                    <div th:if="${#lists.isEmpty(invites)}" class="text-center p-5">
+                    <div th:if="${#lists.isEmpty(invites)}" class="text-center p-5 no-data">
                         <i class="fas fa-users text-muted" style="font-size: 3rem;"></i>
                         <h4 class="text-muted mt-3">Aucun invité trouvé</h4>
                         <p class="text-muted" th:if="${searchQuery}">Aucun résultat pour votre recherche</p>
