@@ -14,9 +14,9 @@ import java.util.Optional;
 public interface InviteRepository extends JpaRepository<Invite, Long> {
 
     /**
-     * Recherche un invité par nom et prénom (insensible à la casse)
+     * Recherche un invité par nom et prénom (insensible à la casse avec trim)
      */
-    @Query("SELECT i FROM Invite i WHERE LOWER(i.nom) = LOWER(:nom) AND LOWER(i.prenom) = LOWER(:prenom)")
+    @Query("SELECT i FROM Invite i WHERE LOWER(TRIM(i.nom)) = LOWER(TRIM(:nom)) AND LOWER(TRIM(i.prenom)) = LOWER(TRIM(:prenom))")
     Optional<Invite> findByNomAndPrenom(@Param("nom") String nom, @Param("prenom") String prenom);
 
     /**
@@ -35,7 +35,8 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
     long countByConfirmeTrue();
 
     /**
-     * Compte le nombre total d'invités
+     * Recherche par nom ou prénom (pour la fonctionnalité de recherche admin)
      */
-    long count();
+    @Query("SELECT i FROM Invite i WHERE LOWER(TRIM(i.nom)) LIKE LOWER(CONCAT('%', TRIM(:search), '%')) OR LOWER(TRIM(i.prenom)) LIKE LOWER(CONCAT('%', TRIM(:search), '%'))")
+    List<Invite> findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(@Param("search") String search);
 }

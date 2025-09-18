@@ -26,33 +26,36 @@
             
             <div class="result-card">
                 <!-- En-tête conditionnelle selon le succès -->
-                <div th:class="${success} ? 'result-card-header-success' : 'result-card-header-error'">
-                    <i th:class="${success} ? 'fas fa-check-circle result-icon' : 'fas fa-times-circle result-icon'"></i>
-                    <h2 th:text="${success} ? 'Confirmation réussie' : 'Erreur de confirmation'"></h2>
+                <div th:class="${success != null && success} ? 'result-card-header-success' : 'result-card-header-error'">
+                    <i th:class="${success != null && success} ? 'fas fa-check-circle result-icon' : 'fas fa-times-circle result-icon'"></i>
+                    <h2 th:text="${success != null && success} ? 'Confirmation réussie' : 'Erreur de confirmation'">Résultat</h2>
                 </div>
                 
                 <div class="card-body p-4">
                     <!-- Message principal -->
                     <div class="text-center mb-4">
-                        <h4 th:text="${message}" class="mb-3"></h4>
+                        <h4 th:text="${message != null ? message : 'Aucun message disponible'}" class="mb-3">Message</h4>
                         
                         <!-- Informations supplémentaires pour les confirmations réussies -->
-                        <div th:if="${success and invite}" class="result-info-card">
+                        <div th:if="${success != null && success && invite != null}" class="result-info-card">
                             <h5 class="mb-3"><i class="fas fa-user-check me-2"></i>Informations confirmées</h5>
                             <p class="mb-2">
                                 <strong>Nom complet :</strong> 
-                                <span th:text="${invite.nomComplet}"></span>
+                                <span th:text="${invite.nomComplet != null ? invite.nomComplet : 'Non disponible'}">Nom complet</span>
                             </p>
                             <p class="mb-0">
                                 <strong>Date de confirmation :</strong> 
-                                <span th:text="${invite.dateConfirmation != null ? #temporals.format(invite.dateConfirmation, 'dd/MM/yyyy à HH:mm') : 'Non disponible'}"></span>
+                                <span th:if="${invite.dateConfirmation != null}" 
+                                      th:text="${#temporals.format(invite.dateConfirmation, 'dd/MM/yyyy à HH:mm')}">Date</span>
+                                <span th:if="${invite.dateConfirmation == null}">Non disponible</span>
                             </p>
                         </div>
                     </div>
                     
                     <!-- Actions disponibles -->
                     <div class="text-center">
-                        <div th:if="${success}">
+                        <!-- Cas de succès -->
+                        <div th:if="${success != null && success}">
                             <p class="text-muted mb-4">
                                 Votre présence a été enregistrée avec succès.
                             </p>
@@ -62,11 +65,12 @@
                             </a>
                         </div>
                         
-                        <div th:unless="${success}">
+                        <!-- Cas d'échec -->
+                        <div th:if="${success == null || !success}">
                             <p class="text-muted mb-4">
                                 Veuillez vérifier vos informations et réessayer.
                             </p>
-                            <a href="/invitation/valider" class="btn result-btn">
+                            <a href="/invitation/valider" class="btn result-btn me-2">
                                 <i class="fas fa-redo me-2"></i>
                                 Réessayer
                             </a>
@@ -81,21 +85,7 @@
         </div>
     </div>
 
-    <!-- Scripts chargés de manière asynchrone pour améliorer les performances -->
-    <script>
-        // Chargement asynchrone de Bootstrap
-        function loadBootstrap() {
-            var script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js';
-            script.async = true;
-            document.head.appendChild(script);
-        }
-        
-        if (window.requestIdleCallback) {
-            window.requestIdleCallback(loadBootstrap);
-        } else {
-            setTimeout(loadBootstrap, 0);
-        }
-    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

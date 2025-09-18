@@ -8,6 +8,7 @@ import com.invitation.confirmation.Entity.Invite;
 import com.invitation.confirmation.Repository.InviteRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,42 +20,70 @@ public class InviteService {
     private InviteRepository inviteRepository;
 
     /**
-     * Recherche un invité par nom et prénom
+     * Recherche un invité par nom et prénom (insensible à la casse)
      */
     public Optional<Invite> findByNomAndPrenom(String nom, String prenom) {
         if (nom == null || prenom == null || nom.trim().isEmpty() || prenom.trim().isEmpty()) {
             return Optional.empty();
         }
-        return inviteRepository.findByNomAndPrenom(nom.trim(), prenom.trim());
+
+        // Normalisation des données d'entrée
+        String nomNormalise = nom.trim();
+        String prenomNormalise = prenom.trim();
+
+        return inviteRepository.findByNomAndPrenom(nomNormalise, prenomNormalise);
     }
 
     /**
-     * Confirme la présence d'un invité
+     * Confirme la présence d'un invité avec gestion d'erreurs améliorée
      */
     public ConfirmationResult confirmerPresence(String nom, String prenom) {
-        Optional<Invite> inviteOpt = findByNomAndPrenom(nom, prenom);
-
-        if (inviteOpt.isEmpty()) {
-            return new ConfirmationResult(false, "Nom/prénom introuvable ", null);
+        // Validation des paramètres d'entrée
+        if (nom == null || prenom == null || nom.trim().isEmpty() || prenom.trim().isEmpty()) {
+            return new ConfirmationResult(false, "Veuillez remplir tous les champs obligatoires", null);
         }
 
-        Invite invite = inviteOpt.get();
+        try {
+            Optional<Invite> inviteOpt = findByNomAndPrenom(nom, prenom);
 
-        if (invite.isConfirme()) {
-            return new ConfirmationResult(false,
-                    "Déjà confirmé  le " + invite.getDateConfirmation().format(
-                            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm")),
+            if (inviteOpt.isEmpty()) {
+                return new ConfirmationResult(false,
+                        "Aucun invité trouvé avec le nom '" + nom.trim() + " " + prenom.trim() + "'. " +
+                                "Veuillez vérifier l'orthographe exacte de vos nom et prénom.",
+                        null);
+            }
+
+            Invite invite = inviteOpt.get();
+
+            if (invite.isConfirme()) {
+                String dateConfirmation = invite.getDateConfirmation() != null
+                        ? invite.getDateConfirmation().format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm"))
+                        : "date inconnue";
+
+                return new ConfirmationResult(false,
+                        "Votre présence a déjà été confirmée le " + dateConfirmation + ". " +
+                                "Vous n'avez pas besoin de confirmer à nouveau.",
+                        invite);
+            }
+
+            // Confirmer l'invité
+            invite.setConfirme(true);
+            invite.setDateConfirmation(LocalDateTime.now());
+            inviteRepository.save(invite);
+
+            return new ConfirmationResult(true,
+                    "Confirmation réussie ! Merci " + invite.getNomComplet() + ", votre présence est enregistrée.",
                     invite);
+
+        } catch (Exception e) {
+            // Log de l'erreur pour le debug
+            System.err.println("Erreur lors de la confirmation pour " + nom + " " + prenom + ": " + e.getMessage());
+            e.printStackTrace();
+
+            return new ConfirmationResult(false,
+                    "Une erreur technique s'est produite lors de l'enregistrement. Veuillez réessayer dans quelques instants.",
+                    null);
         }
-
-        // Confirmer l'invité
-        invite.setConfirme(true);
-        invite.setDateConfirmation(LocalDateTime.now());
-        inviteRepository.save(invite);
-
-        return new ConfirmationResult(true,
-                "Confirmation réussie ! Merci " + invite.getNomComplet(),
-                invite);
     }
 
     /**
@@ -88,11 +117,81 @@ public class InviteService {
     }
 
     /**
-     * Ajouter un nouvel invité (pour les tests)
+     * Ajouter un nouvel invité
      */
     public Invite ajouterInvite(String nom, String prenom) {
-        Invite invite = new Invite(nom, prenom);
+        if (nom == null || prenom == null || nom.trim().isEmpty() || prenom.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom et le prénom sont obligatoires");
+        }
+
+        Invite invite = new Invite(nom.trim(), prenom.trim());
         return inviteRepository.save(invite);
+    }
+
+    /**
+     * Récupère un invité par son ID
+     */
+    public Optional<Invite> findById(Long id) {
+        return inviteRepository.findById(id);
+    }
+
+    /**
+     * Crée un nouvel invité
+     */
+    public Invite createInvite(Invite invite) {
+        if (invite.getNom() != null)
+            invite.setNom(invite.getNom().trim());
+        if (invite.getPrenom() != null)
+            invite.setPrenom(invite.getPrenom().trim());
+        return inviteRepository.save(invite);
+    }
+
+    /**
+     * Met à jour un invité existant avec gestion correcte des statuts
+     */
+    public Invite updateInvite(Long id, Invite inviteDetails) {
+        Invite invite = inviteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invité non trouvé avec l'ID: " + id));
+
+        // Nettoyage des données
+        invite.setNom(inviteDetails.getNom().trim());
+        invite.setPrenom(inviteDetails.getPrenom().trim());
+
+        // Gestion du statut de confirmation
+        boolean ancienStatut = invite.isConfirme();
+        boolean nouveauStatut = inviteDetails.isConfirme();
+
+        invite.setConfirme(nouveauStatut);
+
+        if (!ancienStatut && nouveauStatut) {
+            // Passer de non confirmé à confirmé
+            invite.setDateConfirmation(LocalDateTime.now());
+        } else if (ancienStatut && !nouveauStatut) {
+            // Passer de confirmé à non confirmé
+            invite.setDateConfirmation(null);
+        }
+        // Si on reste dans le même état, on garde la date existante
+
+        return inviteRepository.save(invite);
+    }
+
+    /**
+     * Supprime un invité
+     */
+    public void deleteInvite(Long id) {
+        Invite invite = inviteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invité non trouvé avec l'ID: " + id));
+        inviteRepository.delete(invite);
+    }
+
+    /**
+     * Recherche des invités (pour l'admin)
+     */
+    public List<Invite> searchInvites(String searchQuery) {
+        if (searchQuery == null || searchQuery.trim().isEmpty()) {
+            return getAllInvites();
+        }
+        return inviteRepository.findByNomContainingIgnoreCaseOrPrenomContainingIgnoreCase(searchQuery.trim());
     }
 
     /**
@@ -152,51 +251,4 @@ public class InviteService {
             return total > 0 ? (double) confirmes / total * 100 : 0;
         }
     }
-
-    /**
-     * Récupère un invité par son ID
-     */
-    public Optional<Invite> findById(Long id) {
-        return inviteRepository.findById(id);
-    }
-
-    /**
-     * Crée un nouvel invité
-     */
-    public Invite createInvite(Invite invite) {
-        return inviteRepository.save(invite);
-    }
-
-    /**
-     * Met à jour un invité existant
-     */
-    public Invite updateInvite(Long id, Invite inviteDetails) {
-        Invite invite = inviteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invité non trouvé avec l'ID: " + id));
-
-        invite.setNom(inviteDetails.getNom());
-        invite.setPrenom(inviteDetails.getPrenom());
-        invite.setConfirme(inviteDetails.isConfirme());
-
-        if (inviteDetails.isConfirme() && !invite.isConfirme()) {
-            invite.setDateConfirmation(LocalDateTime.now());
-        } else if (!inviteDetails.isConfirme()) {
-            invite.setDateConfirmation(null);
-        }
-
-        return inviteRepository.save(invite);
-    }
-
-    /**
-     * Supprime un invité
-     */
-    public void deleteInvite(Long id) {
-        Invite invite = inviteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invité non trouvé avec l'ID: " + id));
-
-        inviteRepository.delete(invite);
-    }
-
-    // Dans InviteService.java
-
 }

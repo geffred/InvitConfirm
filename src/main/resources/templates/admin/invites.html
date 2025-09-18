@@ -161,6 +161,13 @@
                     <span th:if="${searchQuery}" class="text-muted fs-6 ms-2">
                         (Résultats pour: "<span th:text="${searchQuery}"></span>")
                     </span>
+                     <a href="/admin/invites/export-pdf" 
+                       class="btn btn-primary btn-sm ms-2" 
+                       title="Télécharger la liste en PDF"
+                       id="pdfExportBtn">
+                        <i class="fas fa-file-pdf me-2"></i>
+                        Exporter en PDF
+                    </a>
                 </h5>
             </div>
             <div class="card-body p-0">

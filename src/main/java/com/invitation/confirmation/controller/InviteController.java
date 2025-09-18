@@ -26,19 +26,58 @@ public class InviteController {
     }
 
     /**
-     * Traitement du formulaire de confirmation
+     * Traitement du formulaire de confirmation avec validation robuste
      */
     @PostMapping("/confirmer")
     public String confirmerPresence(
-            @RequestParam("nom") String nom,
-            @RequestParam("prenom") String prenom,
+            @RequestParam(value = "nom", required = false) String nom,
+            @RequestParam(value = "prenom", required = false) String prenom,
             Model model) {
 
-        InviteService.ConfirmationResult result = inviteService.confirmerPresence(nom, prenom);
+        try {
+            // Validation côté serveur (sécurité)
+            if (nom == null || prenom == null ||
+                    nom.trim().isEmpty() || prenom.trim().isEmpty()) {
 
-        model.addAttribute("success", result.isSuccess());
-        model.addAttribute("message", result.getMessage());
-        model.addAttribute("invite", result.getInvite());
+                model.addAttribute("success", false);
+                model.addAttribute("message", "Veuillez remplir tous les champs obligatoires (nom et prénom)");
+                model.addAttribute("invite", null);
+                return "confirmationResult";
+            }
+
+            // Validation de la longueur
+            if (nom.trim().length() > 100 || prenom.trim().length() > 100) {
+                model.addAttribute("success", false);
+                model.addAttribute("message", "Le nom et le prénom ne peuvent pas dépasser 100 caractères");
+                model.addAttribute("invite", null);
+                return "confirmationResult";
+            }
+
+            // Traitement de la confirmation
+            InviteService.ConfirmationResult result = inviteService.confirmerPresence(nom, prenom);
+
+            model.addAttribute("success", result.isSuccess());
+            model.addAttribute("message", result.getMessage());
+            model.addAttribute("invite", result.getInvite());
+
+            // Log pour le debugging (optionnel en développement)
+            if (result.isSuccess()) {
+                System.out.println("✓ Confirmation réussie pour: " + nom.trim() + " " + prenom.trim());
+            } else {
+                System.out.println("✗ Échec de confirmation pour: " + nom.trim() + " " + prenom.trim() +
+                        " - Raison: " + result.getMessage());
+            }
+
+        } catch (Exception e) {
+            // Gestion d'erreur globale pour éviter les crashes
+            System.err.println("Erreur inattendue dans confirmerPresence: " + e.getMessage());
+            e.printStackTrace();
+
+            model.addAttribute("success", false);
+            model.addAttribute("message", "Une erreur technique inattendue s'est produite. " +
+                    "Veuillez réessayer dans quelques instants ou contacter l'organisateur.");
+            model.addAttribute("invite", null);
+        }
 
         return "confirmationResult";
     }

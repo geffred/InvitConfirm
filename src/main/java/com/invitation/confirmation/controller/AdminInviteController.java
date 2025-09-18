@@ -45,11 +45,12 @@ public class AdminInviteController {
         model.addAttribute("invite", new Invite());
         model.addAttribute("searchQuery", searchQuery);
 
-        return "admin/invites"; // Assurez-vous que ce template existe
+        return "admin/invites";
     }
 
     /**
-     * Ajouter un nouvel invité
+     * Ajouter un nouvel invité OU modifier un invité existant
+     * Cette méthode gère les deux cas selon la présence d'un ID
      */
     @PostMapping
     public String addInvite(@ModelAttribute Invite invite, RedirectAttributes redirectAttributes) {
@@ -63,10 +64,40 @@ public class AdminInviteController {
     }
 
     /**
+     * NOUVELLE ROUTE : Modifier un invité existant - correspond au formulaire HTML
+     */
+    @PostMapping("/{id}")
+    public String updateInvite(@PathVariable Long id,
+            @RequestParam("nom") String nom,
+            @RequestParam("prenom") String prenom,
+            @RequestParam("confirme") boolean confirme,
+            RedirectAttributes redirectAttributes) {
+        try {
+            // Validation des données
+            if (nom == null || prenom == null || nom.trim().isEmpty() || prenom.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Le nom et le prénom sont obligatoires");
+                return "redirect:/admin/invites";
+            }
+
+            // Créer un objet Invite avec les nouvelles données
+            Invite inviteDetails = new Invite(nom.trim(), prenom.trim());
+            inviteDetails.setConfirme(confirme);
+
+            // Mettre à jour l'invité
+            inviteService.updateInvite(id, inviteDetails);
+            redirectAttributes.addFlashAttribute("successMessage", "Invité modifié avec succès!");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Erreur lors de la modification: " + e.getMessage());
+        }
+        return "redirect:/admin/invites";
+    }
+
+    /**
      * Afficher le formulaire d'édition
      */
     @GetMapping("/edit/{id}")
-    public String editInviteForm(@PathVariable Long id, Model model) {
+    public String editInviteForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Optional<Invite> inviteOpt = inviteService.findById(id);
             if (inviteOpt.isPresent()) {
@@ -81,18 +112,20 @@ public class AdminInviteController {
 
                 return "admin/invites";
             } else {
-                return "redirect:/admin/invites?error=Invité non trouvé";
+                redirectAttributes.addFlashAttribute("errorMessage", "Invité non trouvé");
+                return "redirect:/admin/invites";
             }
         } catch (Exception e) {
-            return "redirect:/admin/invites?error=" + e.getMessage();
+            redirectAttributes.addFlashAttribute("errorMessage", "Erreur: " + e.getMessage());
+            return "redirect:/admin/invites";
         }
     }
 
     /**
-     * Modifier un invité existant
+     * ANCIENNE ROUTE : Garder pour compatibilité si utilisée ailleurs
      */
     @PostMapping("/update/{id}")
-    public String updateInvite(@PathVariable Long id, @ModelAttribute Invite inviteDetails,
+    public String updateInviteOld(@PathVariable Long id, @ModelAttribute Invite inviteDetails,
             RedirectAttributes redirectAttributes) {
         try {
             inviteService.updateInvite(id, inviteDetails);
